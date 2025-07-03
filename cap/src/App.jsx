@@ -16,6 +16,8 @@ function App() {
   })
   const [currentImage, setCurrentImage] = useState(null);
   const [prevImages, setPrevImages] = useState([]);
+  const [quota, setQuota] = useState(null);
+
 
   const submitForm = () => {
     let defaultValues = {
@@ -64,6 +66,7 @@ function App() {
       // append new image to prevImages array
       setPrevImages((images) => [...images, json.url])
       reset();
+      getQuota();
     }
   }
 
@@ -76,6 +79,23 @@ function App() {
     width: "",
     height: "",
     })
+  }
+  // Stretch feature
+  //endpoint: is like a door into a different part of the system, like the quota endpoint lets us get info about api call quota etc.
+  // endpoint is kinda like a menu item
+  // if the endpoint is /menu/pepperoni-pizza then we can obtain through the GET call response things like this
+
+//   {
+//   "name": "Pepperoni Pizza",
+//   "ingredients": ["pepperoni", "cheese", "tomato sauce", "dough"],
+//   "size": "large",
+//   "price": 14.99,
+//   "calories": 1200
+// }
+  const getQuota = async () => {
+    const response = await fetch("https://api.apiflash.com/v1/urltoimage/quota?access_key=" + ACCESS_KEY);
+    const result = response.json();
+    setQuote(result);
   }
 
 
@@ -121,6 +141,14 @@ function App() {
       </div>
     </div>
     <br></br>
+    {quota ? (
+      <p className="quota">
+        {" "}
+        Remaining API calls: {quota.remaining} out of {quota.limit}
+      </p>
+    ) : (
+      <p></p>
+    )}
     </div>
   )
 }
